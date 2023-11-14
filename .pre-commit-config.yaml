@@ -16,3 +16,7 @@ repos:
       - id: fix-byte-order-marker
       - id: mixed-line-ending
       - id: trailing-whitespace
+  - repo: https://github.com/mrtazz/checkmake.git
+    rev: 0.2.2
+    hooks:
+      - id: checkmake
