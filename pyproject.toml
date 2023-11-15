@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "bookish-octo-funicular"
 version = "0.1.0"
-description = ""
+description = "Convert calendars into a schedule."
 authors = ["Mark Ferlatte <mark@ferlatte.net>"]
 readme = "README.md"
 
