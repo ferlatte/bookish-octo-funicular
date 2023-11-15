@@ -6,11 +6,12 @@ clean:
 	$(RM) .*.stamp
 
 test:
-	mypy .
-	python3 -m unittest discover
+	poetry run mypy .
+	poetry run python3 -m unittest discover
 
 run:
-	./main.py
+	poetry run ./main.py
+
 pre-commit: .git/hooks/pre-commit
 	pre-commit run --all-files
 
