@@ -5,14 +5,19 @@ all: run
 clean:
 	$(RM) .*.stamp
 
-test:
-	mypy .
-	python3 -m unittest discover
+test: poetry.lock
+	poetry run mypy .
+	poetry run python3 -m unittest discover
 
-run:
-	./main.py
+run: poetry.lock
+	poetry run ./main.py
+
 pre-commit: .git/hooks/pre-commit
 	pre-commit run --all-files
+
+poetry.lock: pyproject.toml
+	poetry install
+	touch poetry.lock # poetry install doesn't reliably update the lockfile when run
 
 .git/hooks/pre-commit: $(PRE-COMMIT)
 	pre-commit install

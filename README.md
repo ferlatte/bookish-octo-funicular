@@ -9,6 +9,7 @@ Convert calendars into a schedule.
 ```
 asdf install
 pip3 install --upgrade pip
-pip3 install mypy
 pip3 install poetry
+
+make all
 ```
