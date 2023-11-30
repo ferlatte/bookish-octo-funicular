@@ -21,6 +21,7 @@ make all
 poetry add name_of_package
 poetry add name_of_dev_package --group dev
 ```
+Note that pre-commit's mypy hook will need any module type stub packages added to additional_dependencies after you install them via poetry.
 
 ### Updating dependencies
 Do this regularly.
