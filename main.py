@@ -2,7 +2,6 @@
 
 from icalendar import Calendar, Event # type: ignore
 import requests
-import types-requests
 
 def calendarFromURL(icsURL: str) -> Calendar:
     r = requests.get(icsURL)
