@@ -13,3 +13,19 @@ pip3 install poetry
 
 make all
 ```
+
+## Dependencies
+
+### Adding a new Python dependency
+```
+poetry add name_of_package
+poetry add name_of_dev_package --group dev
+```
+
+### Updating dependencies
+Do this regularly.
+
+```
+poetry update
+asdf latest
+```

@@ -1,6 +1,13 @@
 #! /usr/bin/env python3
 
 from icalendar import Calendar, Event # type: ignore
+import requests
+import types-requests
+
+def calendarFromURL(icsURL: str) -> Calendar:
+    r = requests.get(icsURL)
+    cal = Calendar.from_ical(r.text)
+    return cal
 
 def calendarFromICSFile(icsfile: str) -> Calendar:
     with open(icsfile) as f:

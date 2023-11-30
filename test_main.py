@@ -4,6 +4,12 @@ from icalendar import Calendar # type: ignore
 import main
 
 class TestMain(unittest.TestCase):
+    def test_calendarFromURL(self) -> None:
+        url = "https://calendars.icloud.com/holidays/us_en-us.ics/"
+        cal = main.calendarFromURL(url)
+        events = cal.walk("vevent")
+        self.assertGreaterEqual(len(events), 1)
+
     def test_calendarFromICSFile(self) -> None:
         cal = main.calendarFromICSFile("test_cal1.ics")
         self.assertIsInstance(cal, Calendar)
