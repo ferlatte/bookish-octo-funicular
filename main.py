@@ -41,7 +41,26 @@ def mergeEventsFromCalendars(calendars: list[Calendar]) -> Calendar:
 # TRANSP:TRANSPARENT consider hard coding this, since other people's schedules shouldn't be in the way of free/busy
 # searches.
 # RRULE: repeating event rules
-def cleanEventFromEvent(event: Event) -> Event:...
+# EXDATE: Excluded dates from the RRULE (ie, when you delete 1 event from a repeating event)
+def cleanEventFromEvent(event: Event) -> Event:
+    cleanEvent = Event()
+    dtstamp = event.get('DTSTAMP')
+    cleanEvent.add('DTSTAMP', dtstamp)
+    uid = event.get('UID')
+    cleanEvent.add('UID', uid)
+    dtstart = event.get('DTSTART')
+    cleanEvent.add('DTSTART', dtstart)
+    dtend = event.get('DTEND')
+    cleanEvent.add('DTEND', dtend)
+    summary = event.get('SUMMARY')
+    cleanEvent.add('SUMMARY', summary)
+    cleanEvent.add('TRANSP', "TRANSPARENT")
+    # FIXME: these aren't working yet but we're moving forward and will fix them later when we need them
+    # rrule = event.get('RRULE')
+    # cleanEvent.add('RRULE', rrule)
+    # exdate = event.get('EXDATE')
+    # cleanEvent.add('EXDATE', exdate)
+    return cleanEvent
 
 if __name__ == "__main__":
     print("Hello, world.")
