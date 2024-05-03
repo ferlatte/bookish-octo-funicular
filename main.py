@@ -2,13 +2,21 @@
 
 from icalendar import Calendar, Event # type: ignore
 import requests
-from flask import Flask
+from flask import Flask, make_response
+from markupsafe import escape
 
 app = Flask(__name__)
 
 @app.route("/hello")
-def hello_world():
-        return "<html><head></head><body><p>Hello, World!</p></body></html>"
+def hello_world() -> str:
+    return "<html><head></head><body><p>Hello, World!</p></body></html>"
+
+@app.route("/schedule/<userid>")
+def get_schedule_for_userid(userid) -> str:
+    c = calendarFromICSFile("test_cal1.ics")
+    r = make_response(c.to_ical(), 200)
+    r.headers["Content-Type"] = "text/calendar"
+    return r
 
 def calendarFromURL(icsURL: str) -> Calendar:
     r = requests.get(icsURL)
