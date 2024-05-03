@@ -2,6 +2,13 @@
 
 from icalendar import Calendar, Event # type: ignore
 import requests
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route("/hello")
+def hello_world():
+        return "<html><head></head><body><p>Hello, World!</p></body></html>"
 
 def calendarFromURL(icsURL: str) -> Calendar:
     r = requests.get(icsURL)
