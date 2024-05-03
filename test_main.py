@@ -1,9 +1,25 @@
 import unittest
-from icalendar import Calendar # type: ignore
+from icalendar import Calendar, Event # type: ignore
+from zoneinfo import ZoneInfo
+from datetime import datetime, timedelta
+from uuid import uuid4
 
 import main
 
+def makeTestEvent() -> Event:
+    e = Event()
+    now = datetime.now(ZoneInfo("UTC"))
+    one_hour = timedelta(hours=1)
+    e.add('DTSTART', now)
+    e.add('SUMMARY', "Test Event")
+    e.add('UID', uuid4().hex)
+    e.add('DTEND', now + one_hour)
+    e.add('DTSTAMP', now)
+    e.add('X-BAD', "SUPER SECRET DATA OH NO")
+    return e
+
 class TestMain(unittest.TestCase):
+
     def test_calendarFromURL(self) -> None:
         url = "https://calendars.icloud.com/holidays/us_en-us.ics/"
         cal = main.calendarFromURL(url)
@@ -22,3 +38,12 @@ class TestMain(unittest.TestCase):
         cal = main.mergeEventsFromCalendars([cal1, cal2])
         events = cal.walk("vevent")
         self.assertEqual(len(events), 2)
+
+    def test_cleanEventFromEvent(self) -> None:
+        e = makeTestEvent()
+        self.assertEqual(e.get('X-BAD'), 'SUPER SECRET DATA OH NO')
+        cleanEvent = main.cleanEventFromEvent(e)
+        self.assertIsNone(cleanEvent.get('X-BAD'))
+
+
+
