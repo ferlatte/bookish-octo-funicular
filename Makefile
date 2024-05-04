@@ -10,7 +10,7 @@ test: poetry.lock
 	poetry run python3 -m unittest discover
 
 run: poetry.lock
-	poetry run ./main.py
+	poetry run python3 -m flask --app main run --debug
 
 pre-commit: .git/hooks/pre-commit
 	pre-commit run --all-files
