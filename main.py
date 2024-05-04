@@ -2,21 +2,39 @@
 
 from icalendar import Calendar, Event # type: ignore
 import requests
-from flask import Flask, make_response
+from flask import Flask, make_response, Response, abort
 from markupsafe import escape
+from dataclasses import dataclass
 
 app = Flask(__name__)
 
-@app.route("/hello")
+@dataclass(frozen=True)
+class User:
+    """It's a user!"""
+    id: str
+    calendarFeeds: tuple[str, ...]
+
+# TODO: hard coding the users to defer having to deal with persistent data.
+Mark = User("mark", ("URL1", "URL2"))
+Test = User("test", ("URL3", "URL4"))
+Users = {Mark.id: Mark,
+         Test.id: Test
+        }
+
+@app.get("/hello")
 def hello_world() -> str:
     return "<html><head></head><body><p>Hello, World!</p></body></html>"
 
-@app.route("/schedule/<userid>")
-def get_schedule_for_userid(userid) -> str:
-    c = calendarFromICSFile("test_cal1.ics")
-    r = make_response(c.to_ical(), 200)
-    r.headers["Content-Type"] = "text/calendar"
-    return r
+@app.get("/schedule/<userId>")
+def get_schedule_for_userid(userId) -> Response:
+    try:
+        u = Users[userId]
+        c = calendarFromICSFile("test_cal1.ics")
+        r = make_response(c.to_ical(), 200)
+        r.headers["Content-Type"] = "text/calendar"
+        return r
+    except KeyError as err:
+        abort(404)
 
 def calendarFromURL(icsURL: str) -> Calendar:
     r = requests.get(icsURL)
@@ -70,7 +88,7 @@ def cleanEventFromEvent(event: Event) -> Event:
     summary = event.get('SUMMARY')
     cleanEvent.add('SUMMARY', summary)
     cleanEvent.add('TRANSP', "TRANSPARENT")
-    # FIXME: these aren't working yet but we're moving forward and will fix them later when we need them
+    # TODO: these aren't working yet but we're moving forward and will fix them later when we need them
     # rrule = event.get('RRULE')
     # cleanEvent.add('RRULE', rrule)
     # exdate = event.get('EXDATE')
