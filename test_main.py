@@ -45,5 +45,10 @@ class TestMain(unittest.TestCase):
         cleanEvent = main.cleanEventFromEvent(e)
         self.assertIsNone(cleanEvent.get('X-BAD'))
 
+    def test_user(self) -> None:
+        u = main.User("test", ("https://example.com/calendar1.ics", "https://example.com/calendar2.ics"))
+        self.assertEqual(len(u.calendarFeeds), 2)
+
+
 
 
