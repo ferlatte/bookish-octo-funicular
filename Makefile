@@ -12,6 +12,9 @@ test: poetry.lock
 run: poetry.lock
 	poetry run python3 -m flask --app main run --debug
 
+installdeps:
+	poetry install
+
 pre-commit: .git/hooks/pre-commit
 	pre-commit run --all-files
 
@@ -22,4 +25,4 @@ poetry.lock: pyproject.toml
 .git/hooks/pre-commit: $(PRE-COMMIT)
 	pre-commit install
 
-.PHONY: all clean run test pre-commit
+.PHONY: all clean run test pre-commit installdeps

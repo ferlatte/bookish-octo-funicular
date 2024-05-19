@@ -6,13 +6,13 @@ Convert calendars into a schedule.
 
 
 ## Setup
-```
+```sh
 asdf install
 asdf reshim
 pip3 install --upgrade pip
 pip3 install poetry
-poetry install
-
+asdf reshim # Need to run this again to get poetry into the PATH
+make installdeps
 make all
 ```
 
