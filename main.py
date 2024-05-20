@@ -15,7 +15,7 @@ class User:
     calendarFeeds: tuple[str, ...]
 
 # TODO: hard coding the users to defer having to deal with persistent data.
-Mark = User("mark", ("URL1", "URL2"))
+Mark = User("mark", ("https://calendars.icloud.com/holidays/us_en-us.ics/",))
 Test = User("test", ("URL3", "URL4"))
 Users = {Mark.id: Mark,
          Test.id: Test
@@ -29,8 +29,12 @@ def hello_world() -> str:
 def get_schedule_for_userid(userId) -> Response:
     try:
         u = Users[userId]
-        c = calendarFromICSFile("test_cal1.ics")
-        r = make_response(c.to_ical(), 200)
+        calendars = []
+        for feed in u.calendarFeeds:
+            c = calendarFromURL(feed)
+            calendars.append(c)
+        schedule = mergeEventsFromCalendars(calendars)
+        r = make_response(schedule.to_ical(), 200)
         r.headers["Content-Type"] = "text/calendar"
         return r
     except KeyError as err:
