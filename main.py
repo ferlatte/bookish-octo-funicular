@@ -1,12 +1,28 @@
 #! /usr/bin/env python3
 
-from icalendar import Calendar, Event # type: ignore
+from icalendar import Calendar, Event, Timezone # type: ignore
 import requests
 from flask import Flask, make_response, Response, abort
 from markupsafe import escape
 from dataclasses import dataclass
+from enum import StrEnum
 
-app = Flask(__name__)
+class ICalendarComponent(StrEnum):
+    EVENT = "VEVENT"
+    TIMEZONE = "VTIMEZONE"
+
+class ICalendarProperty(StrEnum):
+    DTSTAMP = "DTSTAMP"
+    UID = "UID"
+    DTSTART = "DTSTART"
+    DTEND = "DTEND"
+    SUMMARY = "SUMMARY"
+    TRANSP = "TRANSP"
+    RRULE = "RRULE"
+    EXDATE = "EXDATE"
+    SEQUENCE = "SEQUENCE"
+    RECURRENCE_ID = "RECURRENCE-ID"
+
 
 @dataclass(frozen=True)
 class User:
@@ -14,12 +30,18 @@ class User:
     id: str
     calendarFeeds: tuple[str, ...]
 
+MARK_GCAL_URL=""
+MARK_HOLIDAY_URL="https://calendars.icloud.com/holidays/us_en-us.ics/"
+
 # TODO: hard coding the users to defer having to deal with persistent data.
-Mark = User("mark", ("https://calendars.icloud.com/holidays/us_en-us.ics/",))
+Mark = User("mark", (MARK_GCAL_URL, MARK_HOLIDAY_URL))
 Test = User("test", ("URL3", "URL4"))
 Users = {Mark.id: Mark,
          Test.id: Test
         }
+
+app = Flask(__name__)
+
 
 @app.get("/hello")
 def hello_world() -> str:
@@ -64,8 +86,12 @@ def mergeEventsFromCalendars(calendars: list[Calendar]) -> Calendar:
     mergedCalendar = makeCalendar()
     for c in calendars:
         vevent: Event
-        for vevent in c.walk("vevent"):
-            mergedCalendar.add_component(vevent)
+        for vevent in c.walk(ICalendarComponent.EVENT):
+            cleanEvent = cleanEventFromEvent(vevent)
+            mergedCalendar.add_component(cleanEvent)
+        vtimezone: Timezone
+        for vtimezone in c.walk(ICalendarComponent.TIMEZONE):
+            mergedCalendar.add_component(vtimezone)
     return mergedCalendar
 
 # VEVENT objects can carry a lot of information that, in theory, could be bad to leak.
@@ -81,22 +107,17 @@ def mergeEventsFromCalendars(calendars: list[Calendar]) -> Calendar:
 # EXDATE: Excluded dates from the RRULE (ie, when you delete 1 event from a repeating event)
 def cleanEventFromEvent(event: Event) -> Event:
     cleanEvent = Event()
-    dtstamp = event.get('DTSTAMP')
-    cleanEvent.add('DTSTAMP', dtstamp)
-    uid = event.get('UID')
-    cleanEvent.add('UID', uid)
-    dtstart = event.get('DTSTART')
-    cleanEvent.add('DTSTART', dtstart)
-    dtend = event.get('DTEND')
-    cleanEvent.add('DTEND', dtend)
-    summary = event.get('SUMMARY')
-    cleanEvent.add('SUMMARY', summary)
-    cleanEvent.add('TRANSP', "TRANSPARENT")
-    # TODO: these aren't working yet but we're moving forward and will fix them later when we need them
-    # rrule = event.get('RRULE')
-    # cleanEvent.add('RRULE', rrule)
-    # exdate = event.get('EXDATE')
-    # cleanEvent.add('EXDATE', exdate)
+    cleanEvent.add(ICalendarProperty.TRANSP, "TRANSPARENT")
+    for p in (ICalendarProperty.DTEND, 
+              ICalendarProperty.DTSTART,
+              ICalendarProperty.DTSTAMP,
+              ICalendarProperty.UID,
+              ICalendarProperty.SUMMARY,
+              ICalendarProperty.SEQUENCE,
+              ICalendarProperty.RECURRENCE_ID):
+        v = event.get(p)
+        if (v):
+            cleanEvent.add(p, v)
     return cleanEvent
 
 if __name__ == "__main__":
