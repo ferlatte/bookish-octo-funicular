@@ -108,7 +108,7 @@ def mergeEventsFromCalendars(calendars: list[Calendar]) -> Calendar:
 def cleanEventFromEvent(event: Event) -> Event:
     cleanEvent = Event()
     cleanEvent.add(ICalendarProperty.TRANSP, "TRANSPARENT")
-    for p in (ICalendarProperty.DTEND, 
+    for p in (ICalendarProperty.DTEND,
               ICalendarProperty.DTSTART,
               ICalendarProperty.DTSTAMP,
               ICalendarProperty.UID,
