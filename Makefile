@@ -13,6 +13,7 @@ run: poetry.lock
 	poetry run python3 -m flask --app main run --debug
 
 installdeps:
+	pre-commit install
 	poetry install
 
 pre-commit: .git/hooks/pre-commit
