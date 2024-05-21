@@ -8,7 +8,7 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 icalendar = "^5.0.11"
-requests = "^2.31.0"
+requests = "^2.32.0"
 flask = "^3.0.3"
 
 
