@@ -31,8 +31,11 @@ Note that pre-commit's mypy hook will need any module type stub packages added t
 Do this regularly.
 
 ```
+asdf install python latest
+asdf local python latest
+pip3 install --upgrade pip
+pip3 install --upgrade poetry
 poetry update
-asdf latest
 ```
 
 ## Testing
