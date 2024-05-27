@@ -1,3 +1,10 @@
+[tool.mypy]
+strict = true
+# pre-commit sets these to true for mypy.
+# For now, at least make them the same.
+ignore_missing_imports = true
+scripts_are_modules = true
+
 [tool.poetry]
 name = "bookish-octo-funicular"
 version = "0.1.0"

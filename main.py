@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-from icalendar import Calendar, Event, Timezone, vDDDTypes # type: ignore
+from icalendar import Calendar, Event, Timezone, vDDDTypes
 import requests
 from flask import Flask, make_response, Response, abort
 from markupsafe import escape
@@ -50,7 +50,7 @@ def hello_world() -> str:
     return "<html><head></head><body><p>Hello, World!</p></body></html>"
 
 @app.get("/schedule/<userId>")
-def get_schedule_for_userid(userId) -> Response:
+def get_schedule_for_userid(userId: str) -> Response:
     try:
         u = Users[userId]
         calendars = []
@@ -66,17 +66,17 @@ def get_schedule_for_userid(userId) -> Response:
 
 def calendarFromURL(icsURL: str) -> Calendar:
     r = requests.get(icsURL)
-    cal = Calendar.from_ical(r.text)
+    cal:Calendar = Calendar.from_ical(r.text)
     return cal
 
 def calendarFromICSFile(icsfile: str) -> Calendar:
     with open(icsfile) as f:
         icsData = f.read()
-        cal = Calendar.from_ical(icsData)
+        cal:Calendar = Calendar.from_ical(icsData)
         return cal
 
 def makeCalendar() -> Calendar:
-    cal = Calendar()
+    cal:Calendar = Calendar()
     # PRODID and VERSION are required by RFC 5545
     cal.add("PRODID", "bookish-octo-funicular")
     cal.add("VERSION", "2.0")
