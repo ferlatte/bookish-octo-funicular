@@ -1,5 +1,5 @@
 import unittest
-from icalendar import Calendar, Event # type: ignore
+from icalendar import Calendar, Event
 from zoneinfo import ZoneInfo
 from datetime import date, datetime, timedelta
 from uuid import uuid4
