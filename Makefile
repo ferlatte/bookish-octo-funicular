@@ -9,8 +9,9 @@ test: poetry.lock
 	poetry run mypy .
 	poetry run python3 -m unittest discover
 
+# The default flask port (5000) is used on macOS
 run: poetry.lock
-	poetry run python3 -m flask --app main run --debug
+	poetry run python3 -m flask --app main run --port 5001 --debug
 
 installdeps:
 	pre-commit install
