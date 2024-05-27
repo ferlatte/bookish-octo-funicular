@@ -34,3 +34,12 @@ Do this regularly.
 poetry update
 asdf latest
 ```
+
+## Testing
+
+Unit tests are run via make.
+```
+make test
+```
+
+If you are working with generating iCalendar data, you should run your generated data through a validator. This is the one Mark has been using: [https://icalendar.org/validator.html](https://icalendar.org/validator.html)
